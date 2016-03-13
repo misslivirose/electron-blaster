@@ -18,18 +18,16 @@ public class StartScript : MonoBehaviour {
     // On hover, change color
     public void OnHoverEnter()
     {
-        Debug.Log("HoverEnter");
-
         Text _thisText = gameObject.GetComponentInChildren<Text>();
-        _thisText.color = Color.blue;
-        
+        _thisText.color = new Color(0.0f, 1.0f, 1.0f);
+
     }
 
     // When not hovering, return color
     public void OnHoverExit()
     {
         Text _thisText = gameObject.GetComponentInChildren<Text>();
-        _thisText.color = new Color(0.0f, 1.0f, 1.0f);
+        _thisText.color = Color.blue;
     }
 
     // On click, load game

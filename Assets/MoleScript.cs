@@ -6,7 +6,7 @@ public class MoleScript : MonoBehaviour {
     public GameController _controller;
     bool isInFocus = false;
     Color inFocusColor = new Color(0.0f, 1.0f, 1.0f);
-    Color outFocusColor = new Color(1.0f, 0.0f, 1.0f);
+    Color outFocusColor = new Color(0.0f, 0.0f, 160.0f/255.0f);
 
 	// Use this for initialization
 	void Start () {
@@ -41,7 +41,7 @@ public class MoleScript : MonoBehaviour {
     {
         isInFocus = true;
         Light _light = gameObject.GetComponentInChildren<Light>();
-        _light.enabled = true;
+        gameObject.GetComponent<MeshRenderer>().material.color = inFocusColor;
         Debug.Log("Focus Enter");
     }
 
@@ -49,8 +49,7 @@ public class MoleScript : MonoBehaviour {
     public void RemoveFocus()
     {
         isInFocus = false;
-        Light _light = gameObject.GetComponentInChildren<Light>();
-        _light.enabled = false;
+        gameObject.GetComponent<MeshRenderer>().material.color = outFocusColor;
         Debug.Log("Focus Exit");
     }
 

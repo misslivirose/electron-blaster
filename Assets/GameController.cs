@@ -4,27 +4,56 @@ using System.Collections;
 
 public class GameController : MonoBehaviour {
 
+    // Public variables - set in scene inspector
     public int _score = 0;
-    public Text _scoreText;
+    public Text _scoreText, _countdownText;
     public ParticleSystem _particles;
+    public GameObject moleObject;
 
     float timeFromLastSpawn = 0.0f;
+    float masterTimer = 0.0f;
+
+    
 
 	// Use this for initialization
 	void Start () {
-        // Count down 3 - 2 - 1
-             
+        StartCoroutine(RunCountdown());
+        BeginGame();
+         
 	}
-	
-	// Update is called once per frame
-	void Update () {
 
-        timeFromLastSpawn += Time.deltaTime;
+    // Count Down from 3 to 0
+    IEnumerator RunCountdown()
+    {
+        yield return new WaitForSeconds(1);
+        _countdownText.text = "2";
+        yield return new WaitForSeconds(1);
+        _countdownText.text = "1";
+        yield return new WaitForSeconds(1);
+        _countdownText.fontSize = 10;
+        _countdownText.text = "Go!";
+        yield return new WaitForSeconds(1);
+        _countdownText.enabled = false;
+
+    }
+
+    // Renable the capsule and start the game timer
+    void BeginGame()
+    {
+        moleObject.SetActive(true);
+    }
+
+    // Update is called once per frame
+    void Update () {
+
+        timeFromLastSpawn += Time.smoothDeltaTime;
         if(timeFromLastSpawn >= 10.0f)
         {
             PositionMole();
             timeFromLastSpawn = 0.0f;
         }
+        masterTimer += Time.smoothDeltaTime;
+        
 	}
 
     // Update Score
