@@ -20,7 +20,7 @@ public class GameController : MonoBehaviour {
     float timeFromLastSpawn = 0.0f;
     float masterTimer = 90.0f;
     bool masterTimerRunning = false;
-    AudioSource _source;
+    AudioSource _source, _alarmSource;
     float _skyRotation = 0.0f;
 
     // Alert remaining time variables
@@ -33,10 +33,10 @@ public class GameController : MonoBehaviour {
 	void Start () {
 
         _source = gameObject.GetComponent<AudioSource>();
+        _alarmSource = _scoreText.GetComponent<AudioSource>();
 
         // Run the countdown
         StartCoroutine(RunCountdown());
-        ApplyDangerEffect();
 	}
 
     // Count Down from 3 to 0, then trigger game start
@@ -101,8 +101,8 @@ public class GameController : MonoBehaviour {
                 // 10 second mark
                 else if(!_tenSecondCountDown & masterTimer <= 12)
                 {
-                    _globalSound.SendMessage("PlaySound", _countdownSound);
                     _tenSecondCountDown = true;
+                    StartCoroutine(ApplyDangerEffect());
 
                 }
                 // Game is finished
@@ -166,10 +166,20 @@ public class GameController : MonoBehaviour {
     }
 
     // Flash material walls to red 
-    void ApplyDangerEffect()
+    IEnumerator ApplyDangerEffect()
     {
         
-        _sky.SetColor("_TintColor", Color.red);
+        for(int i = 0; i < 10; i++)
+        {
+            _sky.SetColor("_Tint", Color.red);
+            _alarmSource.Play();
+            //RenderSettings.skybox = _sky;
+            yield return new WaitForSeconds(.5f);
+            _sky.SetColor("_Tint", Color.cyan);
+            yield return new WaitForSeconds(.5f);
+        }
+
+        yield return new WaitForSeconds(.5f);
         Debug.Log(_sky.ToString());
     }
     
