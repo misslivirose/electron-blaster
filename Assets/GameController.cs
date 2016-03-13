@@ -10,19 +10,24 @@ public class GameController : MonoBehaviour {
     public ParticleSystem _particles;
     public GameObject moleObject;
 
+    // Private variables - specified here
     float timeFromLastSpawn = 0.0f;
-    float masterTimer = 0.0f;
+    float masterTimer = 90.0f;
+    bool masterTimerRunning = false;
 
-    
+    // Alert remaining time variables
+    bool _minuteMark = false;
+    bool _halfMinuteMark = false;
+    bool _tenSecondCountDown = false;
+    bool _finished = false;
 
 	// Use this for initialization
 	void Start () {
         StartCoroutine(RunCountdown());
-        BeginGame();
          
 	}
 
-    // Count Down from 3 to 0
+    // Count Down from 3 to 0, then trigger game start
     IEnumerator RunCountdown()
     {
         yield return new WaitForSeconds(1);
@@ -34,35 +39,63 @@ public class GameController : MonoBehaviour {
         _countdownText.text = "Go!";
         yield return new WaitForSeconds(1);
         _countdownText.enabled = false;
-
+        BeginGame();
     }
 
     // Renable the capsule and start the game timer
     void BeginGame()
     {
+        masterTimerRunning = true;
         moleObject.SetActive(true);
     }
 
     // Update is called once per frame
     void Update () {
-
-        timeFromLastSpawn += Time.smoothDeltaTime;
-        if(timeFromLastSpawn >= 10.0f)
+        if(!_finished)
         {
-            PositionMole();
-            timeFromLastSpawn = 0.0f;
+            timeFromLastSpawn += Time.deltaTime;
+            if (timeFromLastSpawn >= 10.0f)
+            {
+                PositionMole();
+                timeFromLastSpawn = 0.0f;
+            }
+            if (masterTimerRunning)
+            {
+                masterTimer -= Time.deltaTime;
+                // 60 second mark
+                if (!_minuteMark & masterTimer <= 65 )
+                {
+                    Debug.Log("Minute warning");
+                    _minuteMark = true;
+                }
+                // 30 second mark
+                else if (!_halfMinuteMark & masterTimer <= 35)
+                {
+                    Debug.Log("Half Minute Warning");
+                    _halfMinuteMark = true;
+                }
+                else if (!_finished & masterTimer <= 0)
+                {
+                    _finished = true;
+                    masterTimerRunning = false;
+                    _countdownText.text = _score.ToString();
+                    _countdownText.enabled = true;
+                    Destroy(moleObject);
+                }
+            }
         }
-        masterTimer += Time.smoothDeltaTime;
-        
+ 
 	}
 
     // Update Score
     public void UpdateScore()
     {
-        StartCoroutine( PlayEffect());
-        _score++;
-        _scoreText.text = _score.ToString();
-
+        if(!_finished)
+        {
+            StartCoroutine(PlayEffect());
+            _score++;
+            _scoreText.text = _score.ToString();
+        }
     }
     // Play the smack effect
     IEnumerator PlayEffect()
@@ -83,7 +116,6 @@ public class GameController : MonoBehaviour {
         float zPos = 6f * Mathf.Cos(angle);
 
         Vector3 _newLocation = new Vector3(xPos, 1.83f, zPos);
-        Debug.Log("Location: " + _newLocation);
         GameObject.FindGameObjectWithTag("mole").transform.position = _newLocation;
         GameObject.FindGameObjectWithTag("mole").transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
         timeFromLastSpawn = 0.0f;     

@@ -40,9 +40,7 @@ public class MoleScript : MonoBehaviour {
     public void PlaceInFocus()
     {
         isInFocus = true;
-        Light _light = gameObject.GetComponentInChildren<Light>();
         gameObject.GetComponent<MeshRenderer>().material.color = inFocusColor;
-        Debug.Log("Focus Enter");
     }
 
     // When pointer exits, is not in focus
@@ -50,14 +48,11 @@ public class MoleScript : MonoBehaviour {
     {
         isInFocus = false;
         gameObject.GetComponent<MeshRenderer>().material.color = outFocusColor;
-        Debug.Log("Focus Exit");
     }
 
     // On pointer click, test if in focus
     public void CheckIfHit()
-    {
-            Debug.Log("I've been hit!");
-            
+    {            
             _controller.SendMessage("UpdateScore");
     }
 }
