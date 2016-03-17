@@ -126,7 +126,6 @@ public class GameController : MonoBehaviour {
         {
             StartCoroutine(PlayEffect());
             _score++;
-            _scoreText.text = _score.ToString();
         }
     }
     // Play the smack effect
@@ -135,6 +134,13 @@ public class GameController : MonoBehaviour {
         _particles.Emit(1);
         _source.clip = _laser;
         _source.Play();
+
+        Animator _deathAnimation = GameObject.FindGameObjectWithTag("mole").GetComponentInChildren<Animator>();
+        _deathAnimation.SetBool("Dying", true);
+
+        _source.clip = _hit;
+        _source.Play();
+
         yield return new WaitForSeconds(1);
         PositionMole();
 
@@ -144,18 +150,26 @@ public class GameController : MonoBehaviour {
     // Radius = 5
     void PositionMole()
     {
-        _source.clip = _hit;
-        _source.Play();
-
+        GameObject _currentMole = GameObject.FindGameObjectWithTag("mole");
+        KillAnimation();
+        _currentMole.SetActive(false);
         float angle = Random.Range(0.0f, 2*Mathf.PI);
 
         float xPos = 6f * Mathf.Sin(angle);
         float zPos = 6f * Mathf.Cos(angle);
 
         Vector3 _newLocation = new Vector3(xPos, 1.83f, zPos);
-        GameObject.FindGameObjectWithTag("mole").transform.position = _newLocation;
-        GameObject.FindGameObjectWithTag("mole").transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
-        timeFromLastSpawn = 0.0f;     
+        _currentMole.transform.position = _newLocation;
+        _currentMole.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
+        timeFromLastSpawn = 0.0f;
+
+        _currentMole.SetActive(true);     
+    }
+
+    void KillAnimation()
+    {
+        GameObject.FindGameObjectWithTag("mole").GetComponentInChildren<Animator>().SetBool("Dying", false);
+
     }
 
     // Wait for 10 seconds, then return to the home screen
