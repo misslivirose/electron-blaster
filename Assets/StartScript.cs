@@ -19,7 +19,7 @@ public class StartScript : MonoBehaviour {
     public void OnHoverEnter()
     {
         Text _thisText = gameObject.GetComponentInChildren<Text>();
-        _thisText.color = new Color(0.0f, 1.0f, 1.0f);
+        _thisText.color = new Color(1.0f, 163f/255f, 0.0f );
 
     }
 
@@ -27,7 +27,7 @@ public class StartScript : MonoBehaviour {
     public void OnHoverExit()
     {
         Text _thisText = gameObject.GetComponentInChildren<Text>();
-        _thisText.color = Color.blue;
+        _thisText.color = new Color(135f/255f, 87f/255f, 0.0f);
     }
 
     // On click, load game
