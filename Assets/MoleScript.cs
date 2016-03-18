@@ -42,4 +42,10 @@ public class MoleScript : MonoBehaviour {
     {
         _controller.SendMessage("UpdateScore");
     }
+
+    // Play death sound
+    public void PlayDeathSound()
+    {
+        gameObject.GetComponent<AudioSource>().Play();
+    }
 }

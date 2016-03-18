@@ -124,6 +124,9 @@ public class GameController : MonoBehaviour {
     {
         if(!_finished)
         {
+            _source.clip = _laser;
+            _source.Play();
+
             StartCoroutine(PlayEffect());
             _score++;
         }
@@ -132,16 +135,14 @@ public class GameController : MonoBehaviour {
     IEnumerator PlayEffect()
     {
         _particles.Emit(1);
-        _source.clip = _laser;
-        _source.Play();
 
+        yield return new WaitForSeconds(1);
+        GameObject.FindGameObjectWithTag("mole").SendMessage("PlayDeathSound");
         Animator _deathAnimation = GameObject.FindGameObjectWithTag("mole").GetComponentInChildren<Animator>();
         _deathAnimation.SetBool("Dying", true);
 
-        _source.clip = _hit;
-        _source.Play();
-
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(1.2f);
+   
         PositionMole();
 
     }
@@ -150,6 +151,7 @@ public class GameController : MonoBehaviour {
     // Radius = 5
     void PositionMole()
     {
+
         GameObject _currentMole = GameObject.FindGameObjectWithTag("mole");
         KillAnimation();
         _currentMole.SetActive(false);
