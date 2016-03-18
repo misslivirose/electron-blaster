@@ -31,7 +31,6 @@ public class GameController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
         _source = gameObject.GetComponent<AudioSource>();
         _alarmSource = _scoreText.GetComponent<AudioSource>();
 
@@ -165,7 +164,8 @@ public class GameController : MonoBehaviour {
         _currentMole.transform.LookAt(new Vector3(0.0f, 0.0f, 0.0f));
         timeFromLastSpawn = 0.0f;
 
-        _currentMole.SetActive(true);     
+        _currentMole.SetActive(true);
+        _currentMole.SendMessage("PlayAwakeSound");  
     }
 
     void KillAnimation()
@@ -178,25 +178,25 @@ public class GameController : MonoBehaviour {
     IEnumerator ResetGame()
     {
         yield return new WaitForSeconds(10);
+        GameObject.FindGameObjectWithTag("whiteLight").GetComponent<Light>().intensity = 0.0f;
+        yield return new WaitForSeconds(3);
+        GameObject.FindGameObjectWithTag("orangeLight").GetComponent<Light>().intensity = 0.0f;
+        yield return new WaitForSeconds(1);
         SceneManager.LoadScene(0);
     }
 
     // Flash material walls to red 
     IEnumerator ApplyDangerEffect()
     {
+        Color orangeColor = GameObject.FindGameObjectWithTag("colorLight").GetComponent<Light>().color;
         
         for(int i = 0; i < 10; i++)
         {
-            _sky.SetColor("_Tint", Color.red);
             _alarmSource.Play();
-            //RenderSettings.skybox = _sky;
-            yield return new WaitForSeconds(.5f);
-            _sky.SetColor("_Tint", Color.cyan);
-            yield return new WaitForSeconds(.5f);
+            yield return new WaitForSeconds(1f);
         }
 
         yield return new WaitForSeconds(.5f);
-        Debug.Log(_sky.ToString());
     }
     
    
