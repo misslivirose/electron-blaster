@@ -7,7 +7,7 @@ public class StartScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+	  
 	}
 	
 	// Update is called once per frame
@@ -27,7 +27,7 @@ public class StartScript : MonoBehaviour {
     public void OnHoverExit()
     {
         Text _thisText = gameObject.GetComponentInChildren<Text>();
-        _thisText.color = new Color(135f/255f, 87f/255f, 0.0f);
+        _thisText.color = new Color(96f/255f, 96f/255f, 96f/255f);
     }
 
     // On click, load game

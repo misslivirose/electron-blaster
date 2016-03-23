@@ -21,7 +21,6 @@ public class GameController : MonoBehaviour {
     float masterTimer = 90.0f;
     bool masterTimerRunning = false;
     AudioSource _source, _alarmSource;
-    float _skyRotation = 0.0f;
 
     // Alert remaining time variables
     bool _minuteMark = false;
@@ -138,9 +137,9 @@ public class GameController : MonoBehaviour {
         yield return new WaitForSeconds(1);
         GameObject.FindGameObjectWithTag("mole").SendMessage("PlayDeathSound");
         Animator _deathAnimation = GameObject.FindGameObjectWithTag("mole").GetComponentInChildren<Animator>();
-        _deathAnimation.SetBool("Dying", true);
+        _deathAnimation.SetBool("Disappearing", true);
 
-        yield return new WaitForSeconds(1.2f);
+        yield return new WaitForSeconds(2f);
    
         PositionMole();
 
@@ -170,17 +169,41 @@ public class GameController : MonoBehaviour {
 
     void KillAnimation()
     {
-        GameObject.FindGameObjectWithTag("mole").GetComponentInChildren<Animator>().SetBool("Dying", false);
+        GameObject.FindGameObjectWithTag("mole").GetComponentInChildren<Animator>().SetBool("Disappearing", false);
 
+    }
+    
+    // Check against the current high score
+    void CheckAndUpdateLeaderboard()
+    {
+        // This is our first playthrough
+        if(!PlayerPrefs.HasKey("_device_high_score"))
+        {
+            PlayerPrefs.SetInt("_device_high_score", _score);
+            Debug.Log("First score has been set for leaderboard");
+        }
+
+        // A high score already exists
+        if(PlayerPrefs.HasKey("_device_high_score"))
+        {
+            // Check if the current score is a higher score
+            if(PlayerPrefs.GetInt("_device_high_score") < _score)
+            {
+                Debug.Log("The old score of " + PlayerPrefs.GetInt("_device_high_score") + " has been beaten!");
+                PlayerPrefs.SetInt("_device_high_score", _score);
+                Debug.Log("A new high score of" + _score + "has been recorded!");
+            }
+        }
     }
 
     // Wait for 10 seconds, then return to the home screen
     IEnumerator ResetGame()
     {
+        CheckAndUpdateLeaderboard();
         yield return new WaitForSeconds(10);
         GameObject.FindGameObjectWithTag("whiteLight").GetComponent<Light>().intensity = 0.0f;
         yield return new WaitForSeconds(3);
-        GameObject.FindGameObjectWithTag("orangeLight").GetComponent<Light>().intensity = 0.0f;
+        GameObject.FindGameObjectWithTag("colorLight").GetComponent<Light>().intensity = 0.0f;
         yield return new WaitForSeconds(1);
         SceneManager.LoadScene(0);
     }
